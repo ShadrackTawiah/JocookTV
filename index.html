@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JocookTv | Affiliate Marketing Mentor</title>
+    <link rel="icon" type="image/x-icon" href="picture.jpeg">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --brand-lavender: #967BB6; 
+            --brand-lilac: #d1c4e9;
+            --brand-navy: #2d2345;
+            --brand-mist: #fcfaff; 
+            --lavender-gradient: linear-gradient(135deg, #967BB6 0%, #673ab7 100%);
+            --glass-bg: rgba(255, 255, 255, 0.8);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--brand-mist);
+            color: var(--brand-navy);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Sidebar Styles */
+        #sidebar {
+            min-width: 280px;
+            max-width: 280px;
+            min-height: 100vh;
+            background: var(--brand-navy);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: fixed;
+            z-index: 1050;
+            box-shadow: 15px 0 40px rgba(0,0,0,0.1);
+        }
+
+        #sidebar.closed {
+            margin-left: -280px;
+        }
+
+        .sidebar-header {
+            padding: 2.5rem 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .nav-link {
+            padding: 1rem 2rem;
+            color: #b0a8cc;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: 0.3s all;
+            font-weight: 500;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: white;
+            background: rgba(255,255,255,0.05);
+            border-left: 4px solid var(--brand-lavender);
+        }
+
+        /* Main Content Wrapper */
+        #content {
+            width: 100%;
+            padding-left: 280px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        #content.expanded {
+            padding-left: 0;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: radial-gradient(circle at 70% 30%, #f4f0ff 0%, #ffffff 100%);
+            padding: 6rem 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lavender-glow {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: var(--brand-lavender);
+            filter: blur(140px);
+            opacity: 0.12;
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Circular Profile Styling */
+        .profile-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 3.5rem;
+            z-index: 5;
+        }
+
+        .profile-orbit {
+            position: absolute;
+            top: -12px;
+            left: -12px;
+            right: -12px;
+            bottom: -12px;
+            border: 2px solid var(--brand-lilac);
+            border-radius: 50%;
+            animation: rotate-ring 15s linear infinite;
+        }
+
+        .profile-orbit::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            right: -5px;
+            width: 12px;
+            height: 12px;
+            background: var(--brand-lavender);
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--brand-lavender);
+        }
+
+        .profile-img {
+            width: 240px;
+            height: 240px;
+            border-radius: 50%; /* Perfect Circle */
+            border: 10px solid white;
+            object-fit: cover;
+            box-shadow: 0 20px 50px rgba(150, 123, 182, 0.2);
+            background-color: #eee;
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            z-index: 2;
+        }
+
+        .profile-container:hover .profile-img {
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 0 30px 60px rgba(150, 123, 182, 0.3);
+        }
+
+        .status-pill {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 10;
+            border: 1px solid rgba(150, 123, 182, 0.15);
+            white-space: nowrap;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: #4ade80;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .status-dot::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #4ade80;
+            border-radius: 50%;
+            animation: pulse-ring 1.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+
+        .crown-badge {
+            position: absolute;
+            top: 10px;
+            right: 0px;
+            background: linear-gradient(135deg, #ffd700, #ffa500);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.6rem;
+            border: 5px solid white;
+            box-shadow: 0 12px 24px rgba(255, 165, 0, 0.3);
+            z-index: 11;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .experience-badge {
+            position: absolute;
+            top: 60px;
+            left: -15px;
+            background: var(--brand-navy);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            z-index: 11;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border: 2px solid white;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        @keyframes rotate-ring {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Cards and Elements */
+        .custom-card {
+            border: none;
+            border-radius: 2rem;
+            box-shadow: 0 20px 40px rgba(45, 35, 69, 0.04);
+            background: white;
+            transition: all 0.4s ease;
+            margin-bottom: 3rem;
+            overflow: hidden;
+            border: 1px solid rgba(150, 123, 182, 0.08);
+        }
+
+        .custom-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px rgba(150, 123, 182, 0.08);
+        }
+
+        /* Buttons */
+        .btn-cta {
+            background: var(--lavender-gradient);
+            border: none;
+            color: white;
+            padding: 1.25rem 3rem;
+            border-radius: 18px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: 0.3s;
+            box-shadow: 0 15px 30px rgba(103, 58, 183, 0.25);
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(103, 58, 183, 0.35);
+            color: white;
+        }
+
+        /* Video Area */
+        .video-wrapper {
+            background: #000;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.15);
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 992px) {
+            #sidebar { margin-left: -280px; }
+            #sidebar.open { margin-left: 0; }
+            #content { padding-left: 0 !important; }
+        }
+
+        .menu-trigger {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 1100;
+            background: var(--brand-navy);
+            color: white;
+            width: 56px;
+            height: 56px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border: none;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+
+        .lavender-text { color: var(--brand-lavender); }
+        
+        .marketing-feature {
+            background: var(--brand-mist);
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            height: 100%;
+            border: 1px solid rgba(150, 123, 182, 0.05);
+        }
+
+        .stat-card {
+            border-left: 4px solid var(--brand-lavender);
+            background: rgba(150, 123, 182, 0.03);
+            padding: 1rem 1.5rem;
+            border-radius: 0 1rem 1rem 0;
+        }
+
+        .form-control {
+            background: #fcfcfe;
+            padding: 1rem 1.5rem;
+            border: 1px solid #f0edf6;
+            border-radius: 12px;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 4px rgba(150, 123, 182, 0.1);
+            border-color: var(--brand-lavender);
+        }
+
+        /* Footer Enhancements */
+        .footer-link {
+            color: #6c757d;
+            text-decoration: none;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
+        .footer-link:hover {
+            color: var(--brand-lavender);
+            padding-left: 5px;
+        }
+        .newsletter-box {
+            background: var(--brand-mist);
+            border: 1px solid rgba(150, 123, 182, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Mobile Menu Trigger -->
+    <button type="button" id="sidebarToggle" class="menu-trigger d-lg-none">
+        <i class="bi bi-list fs-3"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h5 class="mb-0 text-white fw-800" style="letter-spacing: 1px;">JocookTv</h5>
+            <div class="d-flex align-items-center mt-2">
+                <span class="badge bg-lavender text-white p-1 px-2 rounded-pill me-2" style="font-size: 0.6rem; background-color: var(--brand-lavender);">OFFICIAL</span>
+                <small class="text-info opacity-75 fw-bold" style="font-size: 0.7rem; letter-spacing: 0.5px; color: var(--brand-lilac) !important;">verified mentor</small>
+            </div>
+        </div>
+
+        <div class="d-flex flex-column h-100">
+            <ul class="list-unstyled mt-4 flex-grow-1">
+                <li><a href="#home" class="nav-link active"><i class="bi bi-house-door"></i> Home</a></li>
+                <li><a href="#strategy" class="nav-link"><i class="bi bi-graph-up-arrow"></i> The Strategy</a></li>
+                <li><a href="#contact" class="nav-link"><i class="bi bi-person-badge"></i> Mentorship</a></li>
+                <li><hr class="mx-4 border-secondary opacity-10"></li>
+                <li><a href="mailto:jnegble11@gmail.com" class="nav-link"><i class="bi bi-envelope"></i> Email Support</a></li>
+            </ul>
+
+            <div class="p-4 mb-4">
+                <div class="bg-primary bg-opacity-10 p-4 rounded-4 text-white" style="background-color: rgba(150, 123, 182, 0.1) !important;">
+                    <p class="small fw-bold mb-3" style="color: var(--brand-lilac);"><i class="bi bi-people-fill me-2"></i> 2.4k+ Students</p>
+                    <a href="https://wa.me/233206879818" target="_blank" class="btn w-100 rounded-pill fw-bold py-2 shadow-sm" style="background-color: var(--brand-lavender); color: white;">Join Group</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div id="content">
+        
+        <!-- Hero Section -->
+        <section id="home" class="hero d-flex align-items-center min-vh-100">
+            <div class="lavender-glow" style="top: -10%; right: -5%;"></div>
+            <div class="lavender-glow" style="bottom: 5%; left: -5%; opacity: 0.08;"></div>
+            
+            <div class="container position-relative">
+                <div class="profile-container reveal">
+                    <!-- Circular Orbit Animation -->
+                    <div class="profile-orbit"></div>
+                    
+                    <!-- Circle Profile Image -->
+                    <img src="picture" 
+                         onerror="this.src='picture.jpeg'" 
+                         alt="JocookTv" class="profile-img">
+                    
+                    <!-- Pulsing Live Status -->
+                    <div class="status-pill">
+                        <span class="status-dot"></span>
+                        <span class="small fw-bold text-navy" style="font-size: 0.8rem;">Currently Online & Mentoring</span>
+                    </div>
+
+                    <!-- Experience Badge -->
+                    <div class="experience-badge">5+ YEARS EXP</div>
+
+                    <!-- Achievement Badge -->
+                    <div class="crown-badge">
+                        <i class="bi bi-stars"></i>
+                    </div>
+                </div>
+                
+                <h1 class="display-3 fw-800 mb-3 reveal" style="letter-spacing: -2px;">Jocook <span class="lavender-text">Tv</span></h1>
+                <p class="lead mb-5 text-secondary fw-500 px-4 reveal" style="max-width: 650px; margin: 0 auto; line-height: 1.6;">
+                    Learn the high-income skill of <span class="text-dark fw-bold">Affiliate Marketing</span>. 
+                    I provide the roadmap to build a sustainable digital business with zero experience.
+                </p>
+                
+                <div class="d-grid gap-3 d-sm-flex justify-content-center px-4 reveal">
+                    <a href="#contact" class="btn btn-cta btn-lg px-5">
+                        Start Your Journey <i class="bi bi-arrow-right-short ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    
+                    <!-- Strategy Section -->
+                    <div class="card custom-card reveal" id="strategy">
+                        <div class="card-body p-4 p-md-5">
+                            <div class="text-center mb-5">
+                                <span class="badge px-4 py-2 rounded-pill mb-3 fw-bold" style="background-color: #f3f0f7; color: var(--brand-lavender);">THE BLUEPRINT</span>
+                                <h2 class="display-6 fw-bold">Success Strategy Video</h2>
+                            </div>
+
+                            <div class="row g-4 mb-5">
+                                <div class="col-md-6">
+                                    <div class="marketing-feature">
+                                        <h6 class="fw-bold mb-3" style="color: var(--brand-lavender);"><i class="bi bi-1-circle-fill me-2"></i> Low Entry Barrier</h6>
+                                        <p class="text-muted small mb-0">No need to create your own products, manage inventory, or handle customer support. Focus 100% on marketing.</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="marketing-feature">
+                                        <h6 class="fw-bold mb-3" style="color: var(--brand-lavender);"><i class="bi bi-2-circle-fill me-2"></i> High Scalability</h6>
+                                        <p class="text-muted small mb-0">Learn how to leverage automated systems that work for you 24/7, even while you sleep.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="video-wrapper">
+                                <iframe 
+                                    src="https://www.youtube.com/embed/hg3Yc6NqmyM" 
+                                    title="Jerry's Affiliate Strategy" 
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    allowfullscreen>
+                                </iframe>
+                            </div>
+                            
+                            <div class="mt-5 stat-card">
+                                <p class="mb-0 text-navy fw-600">
+                                    <i class="bi bi-stars text-warning me-2"></i> 
+                                    "This 3-step system is what transformed my finances. Watch closely to understand the flow."
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact & Mentorship Section -->
+                    <div class="card custom-card p-4 p-md-5 reveal" id="contact">
+                        <div class="card-body">
+                            <div class="text-center mb-5">
+                                <h2 class="display-6 fw-bold">1-on-1 <span class="lavender-text">Mentorship</span></h2>
+                                <p class="text-muted">Fill out the application below to see if you're a good fit for the inner circle.</p>
+                            </div>
+                            
+                            <div class="row g-4 mb-5">
+                                <div class="col-md-6">
+                                    <a href="https://wa.me/233206879818" target="_blank" class="text-decoration-none">
+                                        <div class="p-4 border rounded-4 text-center bg-white h-100 transition hover-shadow">
+                                            <i class="bi bi-whatsapp lavender-text display-5 mb-3"></i>
+                                            <h6 class="fw-bold text-dark">Direct WhatsApp</h6>
+                                            <p class="text-muted small mb-0">Instant communication</p>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <a href="mailto:jnegble11@gmail.com" class="text-decoration-none">
+                                        <div class="p-4 border rounded-4 text-center bg-white h-100 transition hover-shadow">
+                                            <i class="bi bi-envelope-at lavender-text display-5 mb-3"></i>
+                                            <h6 class="fw-bold text-dark">Email Support</h6>
+                                            <p class="text-muted small mb-0">For formal inquiries</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <form id="contactForm" class="p-2">
+                                <div class="row g-3">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold text-muted small text-uppercase">Your Name</label>
+                                        <input type="text" id="userName" class="form-control" placeholder="JocookTv" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold text-muted small text-uppercase">WhatsApp Number</label>
+                                        <input type="tel" id="userPhone" class="form-control" placeholder="+233..." required>
+                                    </div>
+                                    <div class="col-12 mb-4">
+                                        <label class="form-label fw-bold text-muted small text-uppercase">Your Biggest Goal</label>
+                                        <textarea id="userMessage" class="form-control" rows="4" placeholder="Tell me what you want to achieve in the next 6 months..." required></textarea>
+                                    </div>
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-cta w-100 py-3">
+                                            Submit Application <i class="bi bi-send-fill ms-2"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="bg-white pt-5 pb-4 border-top mt-5">
+            <div class="container">
+                <div class="row g-4 mb-5">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="mb-4">
+                            <span class="h4 fw-800">Jocook <span class="lavender-text">Tv</span></span>
+                        </div>
+                        <p class="text-muted small mb-4" style="max-width: 300px;">Helping aspiring entrepreneurs build digital freedom through proven affiliate systems and 1-on-1 mentorship.</p>
+                        <div class="d-flex gap-3 fs-5">
+                            <a href="https://wa.me/233206879818" target="_blank" class="text-secondary opacity-75 hover-lavender transition"><i class="bi bi-whatsapp"></i></a>
+                            <a href="https://www.instagram.com/josephine.negble.52?igsh=MTBtNG9ybzVzaGp0YQ==" class="text-secondary opacity-75 hover-lavender transition"><i class="bi bi-instagram"></i></a>
+                            <a href="https://www.tiktok.com/@java4716" class="text-secondary opacity-75 hover-lavender transition"><i class="bi bi-tiktok"></i></a>
+                            <a href="https://youtube.com/@jocooktv?si=Pfh3cT9CuhkweKXy" class="text-secondary opacity-75 hover-lavender transition"><i class="bi bi-youtube"></i></a>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-2 col-md-3 col-6">
+                        <h6 class="fw-bold mb-4">Quick Links</h6>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="#home" class="footer-link">Home</a></li>
+                            <li class="mb-2"><a href="#strategy" class="footer-link">The Strategy</a></li>
+                            <li class="mb-2"><a href="#contact" class="footer-link">Mentorship</a></li>
+                            <li class="mb-2"><a href="#" class="footer-link">Success Stories</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="col-lg-2 col-md-3 col-6">
+                        <h6 class="fw-bold mb-4">Support</h6>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="mailto:jnegble11@gmail.com" class="footer-link">Email Us</a></li>
+                            <li class="mb-2"><a href="#" class="footer-link">FAQ</a></li>
+                            <li class="mb-2"><a href="#" class="footer-link">Privacy Policy</a></li>
+                            <li class="mb-2"><a href="#" class="footer-link">Terms of Service</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="col-lg-4 col-md-12">
+                        <div class="newsletter-box">
+                            <h6 class="fw-bold mb-2">Weekly Tips & Updates</h6>
+                            <p class="text-muted small mb-3">Get marketing insights directly in your inbox.</p>
+                            <div class="input-group">
+                                <input type="email" class="form-control" placeholder="Your email..." style="border-radius: 12px 0 0 12px;">
+                                <button class="btn px-3 fw-bold" type="button" style="background-color: var(--brand-lavender); color: white; border-radius: 0 12px 12px 0;">
+                                    Join
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center pt-4 border-top">
+                    <p class="text-muted small mb-0">© 2026 Jocooktv Mentorship. No guarantees. Success requires consistent effort.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Sidebar Toggle for Mobile
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+        const content = document.getElementById('content');
+
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('open');
+            // Toggle icon
+            const icon = this.querySelector('i');
+            if(sidebar.classList.contains('open')) {
+                icon.classList.replace('bi-list', 'bi-x-lg');
+            } else {
+                icon.classList.replace('bi-x-lg', 'bi-list');
+            }
+        });
+
+        // Sidebar link behavior
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                navLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Close sidebar on mobile
+                if (window.innerWidth <= 992) {
+                    sidebar.classList.remove('open');
+                    sidebarToggle.querySelector('i').classList.replace('bi-x-lg', 'bi-list');
+                }
+            });
+        });
+
+        // WhatsApp Form Handling
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('userName').value;
+            const phone = document.getElementById('userPhone').value;
+            const goal = document.getElementById('userMessage').value;
+            const coachNumber = "233206879818"; 
+            
+            const message = `Hello Jocook! 👋\n\nMy name is *${name}*.\nPhone: ${phone}\n\n*My Goal:* ${goal}\n\nI'm ready to learn and take action!`;
+            const whatsappUrl = `https://wa.me/${coachNumber}?text=${encodeURIComponent(message)}`;
+            
+            window.open(whatsappUrl, '_blank');
+        });
+
+        // Scroll Reveal Animation
+        function reveal() {
+            const reveals = document.querySelectorAll(".reveal");
+            const windowHeight = window.innerHeight;
+            const revealPoint = 100;
+
+            reveals.forEach(element => {
+                const revealTop = element.getBoundingClientRect().top;
+                if (revealTop < windowHeight - revealPoint) {
+                    element.classList.add("active");
+                }
+            });
+        }
+
+        window.addEventListener("scroll", reveal);
+        // Run once on load to catch elements in viewport
+        document.addEventListener('DOMContentLoaded', reveal);
+    </script>
+</body>
+</html>
