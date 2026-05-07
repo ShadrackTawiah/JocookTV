@@ -101,13 +101,16 @@
             pointer-events: none;
         }
 
-        /* Circular Profile Styling */
-        .profile-container {
-            position: relative;
-            display: inline-block;
-            margin-bottom: 3.5rem;
-            z-index: 5;
-        }
+       /* Circular Profile Styling */
+.profile-container {
+    position: relative;
+    display: flex;
+    justify-content: center;   /* Horizontal center */
+    align-items: center;       /* Vertical center */
+    margin: 0 auto 3.5rem auto;
+    width: fit-content;
+    z-index: 5;
+}
 
         .profile-orbit {
             position: absolute;
@@ -132,18 +135,25 @@
             box-shadow: 0 0 15px var(--brand-lavender);
         }
 
-        .profile-img {
-            width: 240px;
-            height: 240px;
-            border-radius: 50%; /* Perfect Circle */
-            border: 10px solid white;
-            object-fit: cover;
-            box-shadow: 0 20px 50px rgba(150, 123, 182, 0.2);
-            background-color: #eee;
-            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            z-index: 2;
-        }
+.profile-img {
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    border: 10px solid white;
+
+    object-fit: cover;        /* Fills the circle properly */
+ 
+      object-position: top center;/* Keeps face/head centered */
+
+    box-shadow: 0 20px 50px rgba(150, 123, 182, 0.2);
+    background-color: #eee;
+    transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    z-index: 2;
+
+    display: block;
+    margin: 0 auto;
+}
 
         .profile-container:hover .profile-img {
             transform: scale(1.05) translateY(-5px);
@@ -445,7 +455,7 @@
                     </div>
                 </div>
                 
-                <h1 class="display-3 fw-800 mb-3 reveal" style="letter-spacing: -2px;">Jocook <span class="lavender-text">Tv</span></h1>
+                <h1 class="display-3 fw-800 mb-3 reveal" style="letter-spacing: -2px;">JoCook <span class="lavender-text">Tv</span></h1>
                 <p class="lead mb-5 text-secondary fw-500 px-4 reveal" style="max-width: 650px; margin: 0 auto; line-height: 1.6;">
                     Learn the high-income skill of <span class="text-dark fw-bold">Affiliate Marketing</span>. 
                     I provide the roadmap to build a sustainable digital business with zero experience.
